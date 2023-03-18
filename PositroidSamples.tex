@@ -65,8 +65,69 @@
 \newcommand{\transpose}[1]{{}^t{#1}}
 \newcommand{\restricto}[2]{\left.{#1}\right|_{{#2}}}
 \newcommand{\ignore}[1]{}
+
+%%%%%%%%%%%%%%%%% 
+%macros for chord diagrams
+%%%%%%%%%%%%%%%%%
+\usetikzlibrary{decorations.pathmorphing,calc}
+\usetikzlibrary{intersections}                                                   
+
+\tikzstyle{propagator}=[decorate,decoration={snake,amplitude=0.8mm}]
+
+\newcommand{\drawboundary}[2]{
+	\pgfmathsetmacro{\n}{#1}
+	\pgfmathsetmacro{\radius}{#2}
+	\pgfmathsetmacro{\angle}{360/\n}
+	\draw (0,0) circle (\radius);
+	\foreach \i in {1,2,...,\n} {
+		\draw (\angle*\i+ \angle/2:\radius) node {$\bullet$};
+	}	
+}
+
+
+\newcommand{\drawchord}[3]{
+	\pgfmathsetmacro{\r}{#1}
+	\pgfmathsetmacro{\s}{#2}
+	
+	\begin{scope}
+		\draw[#3] (\angle*\r + \angle/2:\radius) -- (\angle*\s + \angle/2:\radius);
+	\end{scope}
+}
+
+
+\newcommand{\drawnumbers}{
+	\foreach \i in {1,2,...,\n} {
+		\pgfmathsetmacro{\x}{\angle*\i}
+		\draw (\x:\radius*1.15) node {\footnotesize \i};
+	}
+}
+
+\newcommand{\drawnumbersshift}{
+	\foreach \i in {1,2,...,\n} {
+		\pgfmathsetmacro{\x}{\angle*\i + \angle/2}
+		\draw (\x:\radius*1.15) node {\footnotesize \i};
+	}
+}
+
+
+
  
 \begin{document}
+
+\begin{tikzpicture}[rotate=67.5,baseline=(current bounding box.east)]
+	\begin{scope}
+		\drawboundary{8}{1.5}
+		\drawnumbersshift
+		\drawchord{1}{4}{dotted}
+		\drawchord{2}{4}{dotted}
+		\drawchord{2}{1}{dotted}
+		\drawchord{5}{8}{}
+		\drawchord{5}{7}{blue}
+		\drawchord{7}{8}{red}
+		
+	\end{scope}
+\end{tikzpicture} 
+
 
 	\begin{center}
 		\scalebox{1}{
@@ -93,7 +154,35 @@
 				\node[right] at (1  ,0.5) {6};
 				\node[below] at (0.5,0  ) {7};
 			\end{tikzpicture}
-		}
+
+	\begin{tikzpicture}[scale=1]
+		\draw[dashed] (0,0) rectangle (5,3);
+		\draw[very thick] (0,0) grid ++(1,1);
+		\draw[very thick] (0,1) grid ++(3,1);
+		\draw[very thick] (0,2) grid ++(4,1);
+		
+		\node at (0.5,0.5) {+};
+		\node at (0.5,1.5) {0};
+		\node at (1.5,1.5) {0};
+		\node at (2.5,1.5) {+};
+		\node at (0.5,2.5) {+};
+		\node at (1.5,2.5) {+};
+		\node at (2.5,2.5) {0};
+		\node at (3.5,2.5) {+};
+		
+		\node[below] at ( 4.5 ,3) {1};
+		\node[right] at (4  ,2.5) {2};
+		\node[below] at (3.5,2  ) {3};
+		\node[right] at (3  ,1.5) {4};
+		\node[below] at (2.5,1  ) {5};
+		\node[below] at (1.5,1  ) {6};
+		\node[right] at (1  ,0.5) {7};
+		\node[below] at (0.5,0  ) {8};
+	\end{tikzpicture}
+}
+
+
+	
 		\scalebox{1}{
 			\begin{tikzpicture}[scale=1]
 				\draw[dashed] (0,0) rectangle (4,3);
