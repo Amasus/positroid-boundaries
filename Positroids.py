@@ -138,6 +138,7 @@ def matroidToGrassmannNecklace(matroid,n):
 #isGrassmannNecklace:
 #Purpose: Takes a list of frozen sets and checks if it 
 #is a Grassmann necklace of the right type
+#If it isn't, it tells you why.
 #GN: a list of frozen sets
 #n: [n] is the ground set
 #d: each set is of size d
@@ -188,32 +189,42 @@ def isGrassmannNecklace(GN, n, d):
 # n: the size of the ground set
 
 def grassmannNecklaceToPositroid(necklace,n,k):
+    if not isGrassmannNecklace(necklace, n, k):
+        raise ValueError("Necklace is not a valid Grassmann Necklace")
     myMatroid = set()
     groundSet = set(range(1,n+1))
     basisElements = itertools.combinations(groundSet, k)
-    for element in basisElements:
-        i = 0
+    for basis in basisElements:
+        isGreaterThan = not any(compareSets(basis, GNelement, n, necklace.index(GNelement)+1) == -1 for GNelement in necklace)
+        '''i = 0
         isGreaterThan = True
         while (isGreaterThan and (i<n)):
             if (compareSets(element,necklace[i],n,i+1) == -1):
                 isGreaterThan = False
-            i += 1
+            i += 1'''
         if isGreaterThan:
-            myMatroid.add(frozenset(element))
+            myMatroid.add(frozenset(basis))
     return myMatroid
 
 
 # isPositroid:
-# Purpose: Given a matroid determine if it is a positroid
-#          A matroid is a positroid if the matroid
+# Purpose: Given the bases set of a matroid determine if it is a positroid
+#          
+#           A matroid is a positroid if the matroid
 #          associated with the grassmann necklace of itself
 #          is itself.
-# matroid: a matroid
-# n: the size fo the ground set
-# Assumptions: the matroid is over the elements {1,...,n}
+# matroid: (set of frozen sets) the basis set of a matroid
+# n: the size of the ground set
 def isPositroid(matroid,n):
+    if not isMatroidBases(matroid):
+        raise ValueError(f"{matroid} is the not the bases set of a matroid")
+    if any(not rangeCheck(element, n) for element in matroid):
+        raise ValueError(f"The matroid has a basis set that is not in [{n}]")
+    #Since we've checked that matroid is actually the bases set of a matroid,
+    #we can read off the rank
+    k = len(list(matroid)[0])
     necklace = matroidToGrassmannNecklace(matroid,n)
-    if matroid == grassmannNecklaceToPositroid(necklace,n):
+    if matroid == grassmannNecklaceToPositroid(necklace,n, k):
         return True
     return False
 
