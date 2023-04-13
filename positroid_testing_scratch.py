@@ -14,6 +14,7 @@ matroid1 = answer[13]
 print(matroid1)
 
 GN = matroidToGrassmannNecklace(matroid1,4)
+
 print(GN)
 print(isGrassmannNecklace(GN,4,2))
 #size_check = sameSizeCheck(basis2)

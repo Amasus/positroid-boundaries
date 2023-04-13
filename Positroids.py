@@ -161,9 +161,18 @@ def isGrassmannNecklace(GN, n, d):
             cond1Set = GN[i-1] - {i}
             cond1 = cond1Set.issubset(GN[i])
             isGN = isGN and cond1
+            if not cond1:
+                print(f'{i} in {GN[i-1]} but next element is {GN[i]}')
         else:
-            cond2 = GN[i-1]==GN[1] 
+            if i < n:
+                nextElem = GN[i]
+            else:
+                nextElem = GN[0] 
+            cond2 = GN[i-1]== nextElem 
             isGN = isGN and cond2
+
+            if not cond2:
+                print(f'{i} not in {GN[i-1]} but next element is {nextElem}') 
     return isGN     
 
 # grassmannNecklaceToPositroid:
