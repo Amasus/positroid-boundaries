@@ -158,20 +158,19 @@ def isGrassmannNecklace(GN, n, d):
     #If GN has the right shape, check the GN conditions
     isGN = True
     for i in range(1,n+1):
+        if i < n:
+            nextElem = GN[i]
+        else:
+            nextElem = GN[0] 
         if i in GN[i-1]:
             cond1Set = GN[i-1] - {i}
-            cond1 = cond1Set.issubset(GN[i])
+            cond1 = cond1Set.issubset(nextElem)
             isGN = isGN and cond1
             if not cond1:
-                print(f'{i} in {GN[i-1]} but next element is {GN[i]}')
+                print(f'{i} in {GN[i-1]} but next element is {nextElem}')
         else:
-            if i < n:
-                nextElem = GN[i]
-            else:
-                nextElem = GN[0] 
             cond2 = GN[i-1]== nextElem 
             isGN = isGN and cond2
-
             if not cond2:
                 print(f'{i} not in {GN[i-1]} but next element is {nextElem}') 
     return isGN     
@@ -195,6 +194,7 @@ def grassmannNecklaceToPositroid(necklace,n,k):
     groundSet = set(range(1,n+1))
     basisElements = itertools.combinations(groundSet, k)
     for basis in basisElements:
+        #Note, the next line checks the Gale ordering. Instead of checking whether or not the basis is greater than or equal to the GNelement for all GNelements, it checks whether or not it is less than any of the GN elements in the correct linear order, then negates.
         isGreaterThan = not any(compareSets(basis, GNelement, n, necklace.index(GNelement)+1) == -1 for GNelement in necklace)
         '''i = 0
         isGreaterThan = True
