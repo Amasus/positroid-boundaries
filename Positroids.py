@@ -363,7 +363,7 @@ def nextYoungDiagram(maxParts,maxPartLength,currentYoungTab):
             currentYoungTab[i] = 0
     return currentYoungTab
 
-#nextPlusZeroRow:
+#_nextPlusZeroRow:
 #Purpose: to iterate through all possible +,0 lists
 #   that satify the plus property from the mask.
 #   To start, pass it "None", iterating after the last
@@ -382,7 +382,7 @@ def nextYoungDiagram(maxParts,maxPartLength,currentYoungTab):
 #Assumptions:
 #Notes: when starting, the currentRow will start with
 #   the same length as the mask.
-def nextPlusZeroRow(topPlusMask,currentRow):
+def _nextPlusZeroRow(topPlusMask,currentRow):
     #Create a row of all zeros (the first object)
     if currentRow is None:
         return [0 for i in topPlusMask]
@@ -434,12 +434,12 @@ def nextFilledYoungTabOfShape(currentFilledYoungTab,youngTab):
             currentPart = currentFilledYoungTab[i];
             #The mask with have a 1 (+) if any cell above it has a 1.
             currentMask = [any([currentFilledYoungTab[k][j]==1 for k in range(i) ]) for j in range(len(currentPart))]
-            currentPart = nextPlusZeroRow(currentMask,currentPart)
+            currentPart = _nextPlusZeroRow(currentMask,currentPart)
             if currentPart is not None:
                 currentFilledYoungTab[i] = currentPart
                 return currentFilledYoungTab
             else:
-                currentPart = nextPlusZeroRow(currentMask,currentPart)
+                currentPart = _nextPlusZeroRow(currentMask,currentPart)
                 currentFilledYoungTab[i] = currentPart
 
 #nextLeDiagam:
@@ -849,10 +849,10 @@ while currentTab is not None:
 
 mask = [0,1,0,1]
 currentRow = None
-currentRow = nextPlusZeroRow(mask,currentRow)
+currentRow = _nextPlusZeroRow(mask,currentRow)
 while currentRow is not None:
     print(currentRow)
-    currentRow = nextPlusZeroRow(mask,currentRow)
+    currentRow = _nextPlusZeroRow(mask,currentRow)
 
 ##youngTab = [2,1]
 ##filledYoungTab = None

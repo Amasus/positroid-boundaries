@@ -21,7 +21,7 @@ from timeit import default_timer as timer
 #nonEmptySetCheck:
 #Purpose: Given a set of frozen set, checks that
 #it is not empty
-#candidateSet:frozen set to be tested
+#candidateSet: frozen set to be tested
 #returns: boolean
 def nonEmptySetCheck(candidateSet):
     if len(candidateSet) == 0:
@@ -88,7 +88,7 @@ def hasBasisExchangeProperty(candidateBases):
         i += 1
     return basisExchangeProperty
 
-#isMatroid:
+#isMatroidBases:
 #Purpose: Check whether or not a candidate bases set is a matroid
 def isMatroidBases(candidateBases):
     emptyMatroid = not nonEmptySetCheck(candidateBases) 
