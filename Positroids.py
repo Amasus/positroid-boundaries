@@ -46,7 +46,7 @@ def cyclicShift(a,n,i):
 # a: a number mod n
 # b: a number mod n
 # n: the modulus
-# i: the minimum element
+# i: the minimum element 
 def shiftingCycleCompare(a,b,n,i):
     a = cyclicShift(a, n, i)
     b = cyclicShift(a, n, i)    
@@ -70,14 +70,6 @@ def shiftingCycleCompare(a,b,n,i):
 # n: the modulus
 # i: the minimum element
 #NOTE: this is a strict lex ordering. SetA and SetB need not be of the same size
-
-#rangeCheck:
-#Purpose: to check that all elements in a set are between 1 and n inclusive
-#setA: a frozen set
-#n: integer defining bound
-def rangeCheck(setA, n):
-    return all(a <= n for a in setA) and all(a>=1 for a in setA)
-
 def compareSets(setA,setB,n,i):
     #Check that all elements of the set are in the right range
     if not rangeCheck(setA, n):
