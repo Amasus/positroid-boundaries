@@ -176,7 +176,6 @@ def circuitToGrassmannNecklace(matroid,n):
         myGrassmanNecklace.append(GNelem)
     return myGrassmanNecklace
 
-breakpoint()
 #isGrassmannNecklace:
 #Purpose: Takes a list of frozen sets and checks if it 
 #is a Grassmann necklace of the right type
@@ -303,8 +302,31 @@ def printGrassmannNecklace(n,k,necklace,cyclicOrder,setsep = ',',innerSetsep= ',
         if setBraces:
             print("}", end ="")
     print(")")
+# plussCoordinates:
+# Purpose: Given two frozen sets, find the coordinate of the + in the Le diagram
+# First: frozen set, presumably the first element of the Grassmann Necklace
+# Other: frozen set, presumably the other element of the Grassmann Necklace
+# output: list of tuples
+def plussCoordinates(first, other):
+    inFirst = list(first.difference(other))
+    inFirst.sort()
+    inFirst.reverse()
+    inOther = list(other.difference(first))
+    inOther.sort()
+    pairs = list(zip(inFirst, inOther))
+    return(pairs)
+
+# circuitToDimension:
+# Purpose: Given the circuit set of a matroid, give the dimension of the largest  positroid containing it.
+# matroid: circuit set of a matroid
+# n: (int) the size of the ground set
+def circuitToDimension(matroid, n):
+    GN = circuitToGrassmannNecklace(matroid, n)
+    plusses = {coord for elem in GN for coord in plussCoordinates(GN[0], elem) }
+    return(len(plusses))
 
 
+breakpoint()
 ####################################################
 #Le Diagrams
 ####################################################
