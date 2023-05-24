@@ -184,9 +184,10 @@ def hasCircuitCond(candidateCircuit):
     intersectingCircuitPairs = [circuitPair for circuitPair in allCircuitPairs if 
                                 len(circuitPair[0].intersection(circuitPair[1]))>0]
     for pair in intersectingCircuitPairs:
-        for elem in pair[0].intersection(pair[1]):
-            complement = (pair[0].union(pair[1])).difference({elem})
-            if all([not(circuit.issubset(complement)) for circuit in candidateCircuit]):
-                return (False)
+        complementList = [(pair[0].union(pair[1])).difference({elem}) for elem in pair[0].intersection(pair[1])]
+        containsCircuit = [any([circuit.issubset(complements) for circuit in candidateCircuit]) for complements in complementList]                       
+         #   if all([not(circuit.issubset(complement)) for circuit in candidateCircuit]):
+        if not(all(containsCircuit)):
+            return (False)
     return(True)
     
