@@ -173,3 +173,20 @@ def printMatroid(k,matroid,setsep = ',',innerSetsep = ',',setBraces = True):
         if setBraces:
             print("}", end ="")
     print("}")
+
+# hasCircuitCond:
+#Purpose: Given a set of frozensets, determine if
+#          it has the basis exchange property
+# candidateBases: a non-empty set of frozensets
+# returns: boolean 
+def hasCircuitCond(candidateCircuit):
+    allCircuitPairs = list(itertools.combinations(candidateCircuit, 2))
+    intersectingCircuitPairs = [circuitPair for circuitPair in allCircuitPairs if 
+                                len(circuitPair[0].intersection(circuitPair[1]))>0]
+    for pair in intersectingCircuitPairs:
+        for elem in pair[0].intersection(pair[1]):
+            complement = (pair[0].union(pair[1])).difference({elem})
+            if all([not(circuit.issubset(complement)) for circuit in candidateCircuit]):
+                return (False)
+    return(True)
+    
