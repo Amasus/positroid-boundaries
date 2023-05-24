@@ -12,8 +12,19 @@ import copy
 
 from timeit import default_timer as timer
 
-
-
+####################################################
+#Generic helper functions
+####################################################
+#rangeCheck:
+#Purpose: to check that a Frozen set (basis, circuit, etc)
+#are within the desired range for the positroid
+#aSet: set of frozen sets
+#number: positive integer against which to be checked
+#outpus: Boolean
+def rangeCheck(aSet, number):
+    if number < 1:
+        raise ValueError(f'[{number}] not a valid set of a positroid')
+    return(all(elem -1 in range(number) for elem in aSet))
 
 ####################################################
 #Grassman Necklaces
@@ -57,6 +68,16 @@ def shiftingCycleCompare(a,b,n,i):
         return -1
     else:
         return 0
+#shiftedRange
+#Purpose: Cyclcally shift the interval [n] into the <_i order
+#n: (int) the size of set to be shifted
+#i: (int) the number to be shifted by
+def shiftedRange (n, i):
+    if n<i:
+        raise ValueError(f'{n} must be bigger than {i}')
+    toShift = list(range(1,i))
+    toKeep = list(range(i, n+1))
+    return(toKeep + toShift)
 
 # compareSets:
 # Purpose: Given two sets setA and setB, returns 1 if
@@ -99,7 +120,7 @@ def compareSets(setA,setB,n,i):
     else:
         return 0
 
-# matroidToGrassmannNecklace:
+# basesToGrassmannNecklace:
 # Purpose: Given a matroid create the Grassmann Necklace
 #          associated with it.
 #          The Grassmann Necklace is created as a list of
@@ -111,22 +132,51 @@ def compareSets(setA,setB,n,i):
 # n: the size of the ground set, note, we assume that the 
 # matroid is defined over a cyclically ordered set.
 
-def matroidToGrassmannNecklace(matroid,n):
+def basesToGrassmannNecklace(matroid,n):
     if not isMatroidBases(matroid):
         raise ValueError("matroid is not a bases set")
-    if any(not rangeCheck(basis, n) for basis in matroid):
+    if any([not rangeCheck(basis, n) for basis in matroid]):
         raise ValueError("some basis set is not in range")
 
     myGrassmanNecklace = []
     if len(matroid) == 0:
         for i in range(1,n+1):
-            myGrassmanNecklace.append([]);
+            myGrassmanNecklace.append([])
     else:
         for i in range(1,n+1):
             myCompareFunc = lambda x,y: compareSets(x,y,n,i)
             myGrassmanNecklace.append(min(matroid,key=functools.cmp_to_key(myCompareFunc)))
     return myGrassmanNecklace
 
+# circuitToGrassmannNecklace:
+# Purpose: Given a matroid (as a set of circuits) create the Grassmann Necklace
+#          associated with it.
+#          The Grassmann Necklace is created as a list of
+#          n sets which come from the basis of the matroid.
+#          the nth item in the list is the smallest basis
+#          element of the matroid with respect to the
+#          cyclically shifted order <i.
+# matroid: (set of Frozen sets) circuit set of a matroid 
+# n: the size of the ground set, note, we assume that the 
+# matroid is defined over a cyclically ordered set.
+
+def circuitToGrassmannNecklace(matroid,n):
+    if not isMatroidCircuit(matroid):
+        raise ValueError("matroid is not a circuit set")
+    if any([not rangeCheck(circuit, n) for circuit in matroid]):
+        raise ValueError("some circuit set is not in range")
+    myGrassmanNecklace = []
+    for i in range(1, n+1):
+        GNelem = frozenset({})
+        for v in shiftedRange(n, i):
+            if any([circuit.issubset(GNelem.union(frozenset({v}))) for circuit in matroid]):
+                continue
+            else:
+                GNelem = GNelem.union(frozenset({v}))
+        myGrassmanNecklace.append(GNelem)
+    return myGrassmanNecklace
+
+breakpoint()
 #isGrassmannNecklace:
 #Purpose: Takes a list of frozen sets and checks if it 
 #is a Grassmann necklace of the right type
@@ -215,7 +265,7 @@ def isPositroid(matroid,n):
     #Since we've checked that matroid is actually the bases set of a matroid,
     #we can read off the rank
     k = len(list(matroid)[0])
-    necklace = matroidToGrassmannNecklace(matroid,n)
+    necklace = basesToGrassmannNecklace(matroid,n)
     if matroid == grassmannNecklaceToPositroid(necklace,n, k):
         return True
     return False
@@ -791,7 +841,7 @@ def positroidChordTex(positroidChord):
 ##n = 4
 ##k = 2
 ##myMatroids = generateMatroids(n,k)
-##myNecklacess = [matroidToGrassmannNecklace(myMatroid,n) for myMatroid in myMatroids]
+##myNecklacess = [basesToGrassmannNecklace(myMatroid,n) for myMatroid in myMatroids]
 ##res = []
 ##[res.append(x) for x in myNecklacess if x not in res]
 ##for neck in res:
@@ -800,7 +850,7 @@ def positroidChordTex(positroidChord):
 ##for matroid in myMatroids:
 ##    print(matroid)
 ##    printMatroid(k,matroid," , ","",True)
-##    necklace = matroidToGrassmannNecklace(matroid,n)
+##    necklace = basesToGrassmannNecklace(matroid,n)
 ##    printGrassmannNecklace(n,k,necklace,True," , ","",False)
 ##    print("neck")
 ##    print(necklace)
@@ -814,7 +864,7 @@ start = timer()
 for n in range(6):
     for k in range(n+1):
         myMatroids = generateMatroids(n,k)
-        myNecklacess = [frozenset(matroidToGrassmannNecklace(myMatroid,n)) for myMatroid in myMatroids]
+        myNecklacess = [frozenset(basesToGrassmannNecklace(myMatroid,n)) for myMatroid in myMatroids]
         res = []
         [res.append(x) for x in myNecklacess if x not in res]
         print(len(res),end = " ")

@@ -179,7 +179,7 @@ def printMatroid(k,matroid,setsep = ',',innerSetsep = ',',setBraces = True):
 #          it has the basis exchange property
 # candidateBases: a non-empty set of frozensets
 # returns: boolean 
-def hasCircuitCond(candidateCircuit):
+def hasCircuitCond3(candidateCircuit):
     allCircuitPairs = list(itertools.combinations(candidateCircuit, 2))
     intersectingCircuitPairs = [circuitPair for circuitPair in allCircuitPairs if 
                                 len(circuitPair[0].intersection(circuitPair[1]))>0]
@@ -190,4 +190,13 @@ def hasCircuitCond(candidateCircuit):
         if not(all(containsCircuit)):
             return (False)
     return(True)
-    
+
+#isMatroidCircuit:
+#Purpose: Check whether or not a candidate circuit set is a matroid
+def isMatroidCircuit(candidateCircuit):
+    containsEmptyset = frozenset({}) in candidateCircuit
+    allPairs = list(itertools.permutations(candidateCircuit, 2))
+    setContainment = any([pair[0].issubset(pair[1]) for pair in allPairs]) 
+    conditionThree = hasCircuitCond3(candidateCircuit)
+    return ((not containsEmptyset) & (not setContainment) & conditionThree)
+  
