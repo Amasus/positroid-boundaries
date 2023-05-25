@@ -35,6 +35,12 @@ candidate4 = {frozenset({1,2,3}), frozenset({3,4,5}), frozenset({1,2,4,5}), froz
 
 foo = matroidClosure(candidate4)
 bar = circuitToGrassmannNecklace(foo,7)
-print(f'{foo} is the circuit set of a matroid: {isMatroidCircuit(foo)} \n with GN {bar} and dimension {circuitToDimension(foo, 7)}')
-
-print(circuitToCoords(foo, 7))
+#print(f'{foo} is the circuit set of a matroid: {isMatroidCircuit(foo)} \n with {len(foo)} sets \n with GN {bar} \n and dimension {circuitToDimension(foo, 7)}')
+fooList = [list(elem) for elem in foo]
+fooList.sort()
+print(f'circuit list is {fooList}')
+basis=grassmannNecklaceToPositroid(bar,7,3)
+basisList= [list(elem) for elem in basis]
+basisList.sort()
+print(f'basis list is {basisList}')
+#print(circuitToLeCoords(foo, 7))

@@ -318,12 +318,12 @@ def plussCoordinates(first, other):
     pairs = list(zip(inFirst, inOther))
     return(pairs)
 
-# circuitToCoords:
+# circuitToLeCoords:
 # Purpose: Given the circuit set of a matroid, give the coordinates in the Le diagram 
 # corresponding to the smallest positroid containing it.
 # matroid: circuit set of a matroid
 # n: (int) the size of the ground set
-def circuitToCoords(matroid, n):
+def circuitToLeCoords(matroid, n):
     GN = circuitToGrassmannNecklace(matroid, n)
     plusses = {coord for elem in GN for coord in plussCoordinates(GN[0], elem) }
     return(plusses)
