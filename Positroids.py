@@ -16,7 +16,7 @@ from timeit import default_timer as timer
 #Generic helper functions
 ####################################################
 #rangeCheck:
-#Purpose: to check that a Frozen set (basis, circuit, etc)
+#Purpose: to check that a Frozen set (basis, s, etc)
 #are within the desired range for the positroid
 #aSet: set of frozen sets
 #number: positive integer against which to be checked
@@ -302,6 +302,8 @@ def printGrassmannNecklace(n,k,necklace,cyclicOrder,setsep = ',',innerSetsep= ',
         if setBraces:
             print("}", end ="")
     print(")")
+
+    
 # plussCoordinates:
 # Purpose: Given two frozen sets, find the coordinate of the + in the Le diagram
 # First: frozen set, presumably the first element of the Grassmann Necklace
@@ -316,17 +318,26 @@ def plussCoordinates(first, other):
     pairs = list(zip(inFirst, inOther))
     return(pairs)
 
+# circuitToCoords:
+# Purpose: Given the circuit set of a matroid, give the coordinates in the Le diagram 
+# corresponding to the smallest positroid containing it.
+# matroid: circuit set of a matroid
+# n: (int) the size of the ground set
+def circuitToCoords(matroid, n):
+    GN = circuitToGrassmannNecklace(matroid, n)
+    plusses = {coord for elem in GN for coord in plussCoordinates(GN[0], elem) }
+    return(plusses)
+
 # circuitToDimension:
-# Purpose: Given the circuit set of a matroid, give the dimension of the largest  positroid containing it.
+# Purpose: Given the circuit set of a matroid, give the dimension of the smallest positroid containing it.
 # matroid: circuit set of a matroid
 # n: (int) the size of the ground set
 def circuitToDimension(matroid, n):
-    GN = circuitToGrassmannNecklace(matroid, n)
-    plusses = {coord for elem in GN for coord in plussCoordinates(GN[0], elem) }
-    return(len(plusses))
+    return(len(circuitToCoords(matroid, n)))
 
 
-breakpoint()
+
+'''
 ####################################################
 #Le Diagrams
 ####################################################
@@ -988,3 +999,4 @@ while currentObject is not None:
 
 #positroidChordTex((11,[[1,2],[2,3],[3,4],[6,9,10]]))
     
+ '''

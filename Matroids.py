@@ -8,6 +8,7 @@
 #import sys
 import math
 import itertools #needed for generate all k element subsets
+from warnings import warn
 #from itertools import chain
 #import functools #needed for custom compare functions
 #import copy
@@ -25,10 +26,10 @@ from timeit import default_timer as timer
 #returns: boolean
 def nonEmptySetCheck(candidateSet):
     if len(candidateSet) == 0:
-        isEmpty = False
+        isNotEmpty = False
     else:
-        isEmpty = True
-    return isEmpty
+        isNotEmpty = True
+    return isNotEmpty
 
 # sameSizeCheck:
 # Purpose: Given a candidate Bases set, verify that every set has the same size.
@@ -51,11 +52,11 @@ def sameSizeCheck(candidateBases):
 #       (A \ {a}) cup {b} is in basis.
 # setA: a frozen set
 # setB: a frozen set
-# basis: a set of frozen sets.
+# bases: a set of frozen sets.
 # returns: boolean
-def hasExchange(setA,setB,basis):
+def hasExchange(setA,setB,bases):
     #check that setA and setB are, indeed, in basis
-    if (setA not in basis) or (setB not in basis):
+    if (setA not in bases) or (setB not in bases):
         raise ValueError('One of the candidate sets not in given basis')
     #calculate the set differences
     setDiffAMinusB = setA - setB
@@ -63,8 +64,10 @@ def hasExchange(setA,setB,basis):
 
     addaToSetB = {setB.union({a}) for a in setDiffAMinusB}
     exchangedSets = {Bcupa-{b} for b in setDiffBMinusA for Bcupa in addaToSetB }
-
-    hasExchange=nonEmptySetCheck( exchangedSets.intersection(basis))
+    exchangedSetsInBases = exchangedSets.intersection(bases)
+    hasExchange=(len(exchangedSetsInBases >0))
+    if not hasExchange:
+        warn(f'{setA} and {setB} do not have a valid exchange')
     return hasExchange
 
 # hasBasisExchangeProperty:
@@ -79,13 +82,11 @@ def hasBasisExchangeProperty(candidateBases):
     #note that basisPairs will be an empty list if candidateBases has only 
     #one element in it. Therefore this method will return True in this case
     #as desired
-    basisExchangeProperty = True
-    i = 0
-    while basisExchangeProperty and (i < len(basisPairs)):
-        #If a set doesn't exchange with another set, we can quit the loop early.
-        pair = basisPairs[i]
-        basisExchangeProperty = hasExchange(pair[0],pair[1],candidateBases)
-        i += 1
+    if len(basisPairs) == 0:
+        return True
+    else:
+        for pair in basisPairs:
+            basisExchangeProperty = hasExchange(pair[0],pair[1],candidateBases) 
     return basisExchangeProperty
 
 #isMatroidBases:
@@ -174,29 +175,77 @@ def printMatroid(k,matroid,setsep = ',',innerSetsep = ',',setBraces = True):
             print("}", end ="")
     print("}")
 
-# hasCircuitCond:
+#isMinDepenedent:
+#Purpose: Given a set of frozen sets, determine it is defines the 
+#minimal dependent set of an independence system
+#candidateSet: set of frozen sets
+def isMinDependent(candidateSet):
+    containsEmptyset = frozenset({}) in candidateSet
+    if containsEmptyset:
+        warn("candidate dependent set contains the empty set")
+    allPairs = list(itertools.permutations(candidateSet, 2))
+    if len(allPairs) == 0:
+        return(True)
+    setContainment = any([pair[0].issubset(pair[1]) for pair in allPairs])
+    if setContainment:
+        warn('some set of the candidate dependent set is contained in another ') 
+    return((not containsEmptyset) & (not setContainment))
+
+# hasCircuitCond3:
 #Purpose: Given a set of frozensets, determine if
 #          it has the basis exchange property
-# candidateBases: a non-empty set of frozensets
+# candidateCircuit: a set of frozensets
 # returns: boolean 
 def hasCircuitCond3(candidateCircuit):
     allCircuitPairs = list(itertools.combinations(candidateCircuit, 2))
     intersectingCircuitPairs = [circuitPair for circuitPair in allCircuitPairs if 
                                 len(circuitPair[0].intersection(circuitPair[1]))>0]
-    for pair in intersectingCircuitPairs:
-        complementList = [(pair[0].union(pair[1])).difference({elem}) for elem in pair[0].intersection(pair[1])]
-        containsCircuit = [any([circuit.issubset(complements) for circuit in candidateCircuit]) for complements in complementList]                       
-         #   if all([not(circuit.issubset(complement)) for circuit in candidateCircuit]):
-        if not(all(containsCircuit)):
-            return (False)
-    return(True)
+    if len(intersectingCircuitPairs) > 0:
+        for pair in intersectingCircuitPairs:
+            complementList = [(pair[0].union(pair[1])).difference({elem}) for elem in pair[0].intersection(pair[1])]
+            containsCircuit = [any([circuit.issubset(complements) for circuit in candidateCircuit]) for complements in complementList]                       
+                #   if all([not(circuit.issubset(complement)) for circuit in candidateCircuit]):
+            condition3 = all(containsCircuit)
+            if not(condition3):
+                warn(f'{pair} fails to saitisfy the circuit condition')
+                return(condition3)
+    return(condition3)
 
 #isMatroidCircuit:
 #Purpose: Check whether or not a candidate circuit set is a matroid
 def isMatroidCircuit(candidateCircuit):
-    containsEmptyset = frozenset({}) in candidateCircuit
-    allPairs = list(itertools.permutations(candidateCircuit, 2))
-    setContainment = any([pair[0].issubset(pair[1]) for pair in allPairs]) 
+    minDependent = isMinDependent(candidateCircuit)
     conditionThree = hasCircuitCond3(candidateCircuit)
-    return ((not containsEmptyset) & (not setContainment) & conditionThree)
+    return (minDependent & conditionThree)
   
+#matroidClosure:
+#Purpose: implementation of the algorithm to find the largest matroid contained in the
+#independence system given by a set of circuits
+#circuitSubset: set of frozen sets
+#output: the circuit set of a matroid (set of frozen sets)
+def matroidClosure(circuitSubset):
+    if not isMinDependent(circuitSubset):
+        raise ValueError(f"{circuitSubset} is not a valid minimally dependent set")
+    isMatroid = isMatroidCircuit(circuitSubset)
+    if isMatroid:
+        return(circuitSubset)
+    allCircuitPairs = list(itertools.combinations(circuitSubset, 2))
+    intersectingCircuitPairs = [circuitPair for circuitPair in allCircuitPairs if 
+                                len(circuitPair[0].intersection(circuitPair[1]))>0]
+    interimResult = circuitSubset
+    while len(intersectingCircuitPairs)>0:
+        pair = intersectingCircuitPairs[0]
+        complementList = [(pair[0].union(pair[1])).difference({elem}) for elem in pair[0].intersection(pair[1])]
+        for complement in complementList:
+            complementContained = any([circuit.issubset(complement) for circuit in interimResult])
+            if complementContained:
+                intersectingCircuitPairs.remove(pair)
+                break
+            else: #not complementContained case
+                circuitsNotContainingComplement = {circuit for circuit in interimResult if not complement.issubset(circuit)}
+                interimResult = circuitsNotContainingComplement.union({complement})
+                allCircuitPairs = list(itertools.combinations(interimResult, 2))
+                intersectingCircuitPairs = [circuitPair for circuitPair in allCircuitPairs if 
+                                len(circuitPair[0].intersection(circuitPair[1]))>0]
+    return(interimResult)
+
