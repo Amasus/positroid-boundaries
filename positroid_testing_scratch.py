@@ -32,15 +32,17 @@ candidate3 = {frozenset({1,2,3}), frozenset({3,4,5}), frozenset({1,2,4,5}), froz
 #print(f'The circuits of the matroid {candidate3} \n has GN {circuitToGrassmannNecklace(candidate3,7)} \n and dimension {circuitToDimension(candidate3, 7)}')
 
 candidate4 = {frozenset({1,2,3}), frozenset({3,4,5}), frozenset({1,2,4,5}), frozenset({1,2,4,6}), frozenset({1,2,4,7})}
+candidate5 = {frozenset({1,2}), frozenset({3,4}), frozenset({1,5,6}), frozenset({1,5,7})}
+candidate6 = {frozenset({1,2}), frozenset({1,3,4}), frozenset({1,3,5,6}), frozenset({1,3,5,7})}
 
-foo = matroidClosure(candidate4)
+foo = matroidClosure(candidate6)
 bar = circuitToGrassmannNecklace(foo,7)
 #print(f'{foo} is the circuit set of a matroid: {isMatroidCircuit(foo)} \n with {len(foo)} sets \n with GN {bar} \n and dimension {circuitToDimension(foo, 7)}')
 fooList = [list(elem) for elem in foo]
 fooList.sort()
 print(f'circuit list is {fooList}')
-basis=grassmannNecklaceToPositroid(bar,7,3)
+basis=grassmannNecklaceToPositroid(bar)
 basisList= [list(elem) for elem in basis]
 basisList.sort()
 print(f'basis list is {basisList}')
-#print(circuitToLeCoords(foo, 7))
+print(circuitToLeCoords(foo, 7))

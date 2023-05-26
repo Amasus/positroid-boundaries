@@ -226,9 +226,13 @@ def isGrassmannNecklace(GN, n, d):
 #          set s_i in the necklace with respect to <i then it is
 #          included as a basis element in the matroid.
 # necklace: (List of frozen Sets)a Grassmann Necklace
-# n: the size of the ground set
 
-def grassmannNecklaceToPositroid(necklace,n,k):
+def grassmannNecklaceToPositroid(necklace):
+    n = len(necklace)
+    if n == 0:
+        k = 0
+    else:
+        k = len(necklace[0])
     if not isGrassmannNecklace(necklace, n, k):
         raise ValueError("Necklace is not a valid Grassmann Necklace")
     myMatroid = set()
@@ -265,7 +269,7 @@ def isPositroid(matroid,n):
     #we can read off the rank
     k = len(list(matroid)[0])
     necklace = basesToGrassmannNecklace(matroid,n)
-    if matroid == grassmannNecklaceToPositroid(necklace,n, k):
+    if matroid == grassmannNecklaceToPositroid(necklace):
         return True
     return False
 
@@ -887,7 +891,7 @@ def positroidChordTex(positroidChord):
 ##    printGrassmannNecklace(n,k,necklace,True," , ","",False)
 ##    print("neck")
 ##    print(necklace)
-##    positroid = grassmannNecklaceToPositroid(necklace,n,k)
+##    positroid = grassmannNecklaceToPositroid(necklace)
 ##    printMatroid(k,positroid," , ","",True)
 ##    print("---------------------------------")
 
