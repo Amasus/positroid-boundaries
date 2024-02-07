@@ -323,22 +323,23 @@ The Fano matroid is a matroid on $7$ points, with $7$ cyclic flats of rank $1$ e
 
 \subsection{Matroids as hypergraphs \label{sec:matroidhypergraph}}
 
-In this section, we give a hypergraphical condition for when the minimal dependent sets of an independence system, $\sC$, defines the circuits of a matroid. I.e. when the family of sets defined in defintion \ref{dfn:mindep} satisfy the circuit condition from \eqref{eq:circuitcondition} and thus, Definition \ref{dfn:matroidcircuit}. Namely, we only insist that $\sC$ statisfies condition \eqref{eqn:minmaxset}. Note that the work in this section is different from the notion of a hypergraphic matroid ala Lorea \cite{1975_paper}. \hlfix{This is the ??? construction}{must exist in the literature. figure out where.}
+In this section, we give a hypergraphical condition for when the minimal dependent sets of an independence system, $\sC$, defines the circuits of a matroid. I.e. when the family of sets defined in defintion \ref{dfn:mindep} satisfy the circuit condition from \eqref{eq:circuitcondition} and thus, Definition \ref{dfn:matroidcircuit}. Namely, we only insist that $\sC$ statisfies condition \eqref{eqn:minmaxset}. Note that the work in this section is different from the notion of a hypergraphic matroid ala Lorea \cite{1975_paper}. [https://www.sciencedirect.com/science/article/pii/S0166218X02004638]
 
-First, recall that a hypergraph is a pair $G = (V, E)$ where each edge $E$ corresponds to a non-empty subset of $V$ (as opposed to a pair of elements of $V$). We denote the vertices of the hyper edge $e$ as $V(e)$, and by $|e|$ the number of vertices in $e$: $|e| = |V(e)$. For any subgraph $H \subseteq G$, we denote by $|H|$ the number of edges in the subgraph and by $V(H) = \cup_{h \in H} V(h)$ the vertices contained in the subgraph. 
+Because there is a wide variety of subtly different definitions in the literature, we carefully define the concepts that we need. First, recall that a hypergraph is a pair $G = (V, E)$ where each edge $E$ corresponds to a non-empty subset of $V$ (as opposed to a pair of elements of $V$). We denote the vertices of the hyper edge $e$ as $V(e)$, and by $|e|$ the number of vertices in $e$: $|e| = |V(e)$. For any subgraph $H \subseteq G$, we denote by $|H|$ the number of edges in the subgraph and by $V(H) = \cup_{h \in H} V(h)$ the vertices contained in the subgraph. 
 
 A loop in a hypergraph is an edges with a single vertex. A hypergraph is simple if it has no repeated edges. It is reduced if no hyperedge contains another.
 
 We are now ready to define the circuit hypergraph associated to a matroid.
 \begin{dfn}\label{dfn:circuithypergraph}
-	Let $M = (V, \sC)$ be a matroid. Then $G_M = (V, \sC)$ to be the associated hypergraph with hyper edges corresponding to circuits of $M$.
-\end{dfn}
+	Let $M = (V, \sC)$ be a matroid. Then $G_M = (V, \sC)$ to be the associated circuit hypergraph. It has hyperedges corresponding to circuits of $M$.\end{dfn}
+
+Similarly, let $G = (V, E)$ be a hypergraph with $E$ satisfying Definition \ref{dfn:matroidcircuit}, then we write $M_G = (V, E)$ is a matroid defined by the circuit set $E$. 
 
 Not that since $M$ is a matroid, $\sC$ satisfied condition \eqref{eqn:minmaxset}. Therefore, $G_M$ is a simple, reduced hypergraph. Furthermore, since $\sC$ is not empty, $G_M$ is not the empty graph.
 
 First, we recall the definitions of paths in hypergraphs, see, for instance, \cite{DirectedHypergraphs}.
 \begin{dfn} \label{dfn:hypergraphpaths}
-A hyperpath in a hypergraph is a sequence of unique vertices $\{x_0, x_1, \ldots , x_n\}$ and a sequence of hyperedges $\{A_1, \ldots A_n\}$ such that $x_i \in A_i \cap A_{i+1}$. 
+A hyperpath in a hypergraph is a sequence of unique vertices $\{x_0, x_1, \ldots , x_{n+1}\}$ and a sequence of hyperedges $\{A_1, \ldots A_n\}$ such that $x_i \in A_i \cap A_{i+1}$. 
 \end{dfn}
 
 Note that the $A_i$ need not be distinct. As with regular graphs, one may speak of connected components of the hypergaph. 
@@ -349,21 +350,29 @@ Analogous of a simple hypergraph, a simple path in a hypergraph is a hyper path 
 
 \begin{rmk} \label{rmk:hyperpathscontainsimple} While connected components are defined in terms of hyperpaths, one may equivalently define a connected component of a hypergraph by the existance of a simple hyperpath between any pair of points. This follows from the fact that every hyperpath can be reduced to a simple path as follows: if $B$ appears multiple times in a hyperpath, $P$, let $A_i$ and $A_j$ be the first and last appearance of $B$ in $P$. Then one may replace the hyper path defined by vertices $\{x_{i-1}, \ldots , x_j\}$ and hyperedges $\{A_i, \ldots, A_j\}$ with vertices $\{x_{i-1}, x_j\}$ and single hyperedge $A_i = A_j = B$ to get a new hyperpath with fewer duplicate hyperedges. While this process does not result in an unique simple hyperpath, it does result in a simple hyperpath. \end{rmk}
 
+Hypergraphs also have cycles.
 
-\begin{comment}
-Similar to graphs, one can define hyper triangles on graphs.
-
-\begin{dfn} \label{dfn:hypertriangle} \sanote{better? is this a known type of triangle?}
-    A hyper triangle is a triple of hyper edges $\{e_1, e_2, e_3\}$ that pairwise intersect, $e_i \cap e_j \neq \emptyset$ and that have no common intersection: $e_1 \cap e_2 \cap e_3 = \emptyset$. We further insist that the triangles lack an inclusion of intersections, $e_i \cap e_j \not \subseteq e_i \cap e_k$, and that there is no edge containment, $e_i \not \subseteq e_j$. 
+\begin{dfn} \label{dfn:hypercycles}
+	A cycle in a hypergraph is hyperpath where $x_{n+1}$ is in $A_0$. A cycle is simple if both the vertices and the edges are unique. 
 \end{dfn}
 
-This is the natural generalization of edge chains on (multi) graphs. 
+Similar to graphs, one can define triangles on hypergraphs.
 
-\begin{rmk}\label{rmk:onintersections}
-Note that the definition of minimal hyperedge chains implies that if $V(e_i) \cap V(e_{i+1}) \subseteq V(e_i) \cap V(e_{i-1}) $ for a sequence of hyperedges $\{e_1, \ldots, e_k\}$ then the sequence is not minimal. Namely, removing $e_i$ gives $\{e_1, \ldots, e_{i-1}, e_i, \ldots, e_k\}$ which remains connected.
-\end{rmk}
+\begin{dfn} \label{dfn:hypertriangle} [AT LEAST arXiv:2202.02839]
+A triangle in a hypergraph consists of three distinct vertices $\{x_0, x_1, x_2\}$ and three distinct edges, $\{A_0, A_1, A_2\}$ with $x_0 \in A_0 \cap A_1$, $x_1 \in A_1 \cap A_2$, $x_2 \in A_2 \cap A_0$ and $\{x_0, x_1, x_2\} \cap A_0 \cap A_1 \cap A_2 = \emptyset$. 
+\end{dfn}
 
-We are now ready to give a hypergraphical representation of the circuit sets of matroids. 
+By Definition \ref{dfn:hypertriangle} a triangle is more than just a simple cycle where $n = 2$, because of the non-intersection condition. Furthermore, this is different from the common definition of a loose triangle that insists that any pair of edges intersect at exactly one point. 
+
+\begin{dfn}\label{dfn:triangulated}
+	We say that a connected component of a hypergraph is triangulated if every common vertex in every pair of intersecting edges belongs to a triangle.
+\end{dfn}
+
+\begin{eg} \label{eg:triangulated}
+	For instance, the hypergraph $G$ on the vertices $\{a, b, c, d\}$ with the edges $A = \{a, b, c\}$, $C = \{ c, b, d\}$ and $D = {a, b, d}$ is not triangulated, because $b$ is in the intersection of all pairs of edges, and therefore cannot belong to a triangle.
+	
+	On the other hand, the hypergraph $G'$ on the vertices $\{a, b, c, d\}$ with the edges $A = \{b, c, d\}$, $B = \{a, c, d\}$, $C = \{ a, b, d\}$ and $D = {a, b, c}$ is triangulated. For instance, both $c$ and $d$ are in the intersection of $A$ and $B$. The vertex $c$ is part of the triangle $A, B, C$ and vertices $\{a, b, d\}$. While $d$ is in the intersection of $A$, $B$ and $C$, since it is not one of the defining vertices of the triangle, this set of edges and vertices satisfy Definition \ref{dfn:hypertriangle}. Similarly, the vertex $d$ is part of the triangle $A, B, D$ with vertices $\{a, b, c\}$. One may check all other pairs of edges similarly.
+\end{eg}
 
 \begin{comment}show an that the third circuit, whose existence is demanded by the circuit condition, \eqref{eq:circuitcondition},, must contain the symmetric difference of the two initial circuits.
 
@@ -376,7 +385,7 @@ Suppose that $C_3 \supseteq (C_1 \cup C_2) \setminus (C_1 \cap C_2)$ does not ho
 Since $C_3 \not \subseteq C_2$,  $|(C_1 \setminus C_2)\cap C_3| = n_3$ with $y_3 \in C_1 \cap C_3$ Note that $C_2 \not \subseteq C_1 \cap C_3 \setminus y_3$. Therefore, by the circuit condition, \eqref{eq:circuitcondition}, there is a $C_4 \subseteq C_3 \cap C_2 \setminus y_3$. If $n_3 = 1$ then $C_4 \subsetneq C_2$, which is a contradiction.
 
 If $n >1$, $|(C_1 \setminus C_2)\cap C_4|  = n_4 < n_3$. Let $y_4 \in C_3 \cap C_4$, and $C_5 \subseteq C_3 \cap C_4 \setminus y_4$. If $m = i$, then $C_5 \subsetneq C_2$, which is a contradiction. Otherwise, continue applying the circuit condition, \eqref{eq:circuitcondition}, to get $C_{i+1} \subseteq C_3 \cup C_i \setminus y_i$ with $|(C_1 \setminus C_2)\cap C_i|  = n_{i+1} < n_i$. This will yeild $n_k = 1$ for some $k$, forcing $C_{k+1} \subsetneq C_2$ which is a contradiction. 
-\end{proof} \end{comment} \end{comment}
+\end{proof} \end{comment} 
 Finally, we introduce the standard definition of completeness of hypergraphs, and a weaker definition that we use in this paper. 
 \begin{dfn}\label{dfn:completehypergraph}
 	A hypergraph $G$ is weakly $k$ complete if and only if, for each set of $k$ vertices, there is an edge containing that set.
@@ -384,30 +393,51 @@ Finally, we introduce the standard definition of completeness of hypergraphs, an
 
 Note that in the hypergraph literature [CITE STUFF], the term complete appears in conjunction with the term uniform. Specifically, a hypergraph $G$ is $r$-uniform if ever hyperedge has size $r$. Then a $r$-uniform hypergraph is $k$-complete if, for every subset of $k$ vertices, there was a distinct edge that contained them. For our purposes, we do not work with uniform hypergraphs. Furthermore, we do not require that there is an unique edge containing any set of $k$ vertices, only that there is some edge. 
 
-We are now ready to prove that matroids give rise to hypergraphs with weakly 2-complete connected components. 
+\begin{eg}
+	\label{eg:triangle!=2complete}
+Note that unlike graphs, where all $2$-complete (or just complete) graphs are triangulated in the sense that any pair of edges with a common vertex is part of triangle, the concepts are quite different for hypergraphs. For instance, consider the set of edges $A = \{a, b, c\}$, $D = \{d, b, e\}$ and $E = \{e, f, a\}$. These form a triangle, indeed a loose triangle, with vertices $b \in A \cap D$, $e \in D \cap E$ and $a \in A\cap E$. However, this subgraph is not weakly 2-complete as there is no edge containing both vertex $c$ and $f$. 
 
-\begin{lem}\label{res:matroidthenhypergraph}
-    Let $M = (V, \sC)$ be a matroid. Then $G = (V, \sC)$ is a  hypergraph where every connected component is weakly $2$-complete.
+Similarly, recall the hypergraph $G$ from Example \ref{eg:triangulated}. It has  vertices $\{a, b, c, d\}$ with the edges $A = \{a, b, c\}$, $C = \{ c, b, d\}$ and $D = \{a, b, d\}$. This is 2-complete, but not triangulated, as discussed in the above example.   
+\end{eg}
+
+We are now ready to combined these definitions to show that  matroids correspond to simple hypergraphs with weakly 2-complete, triangulated connected components. 
+
+\begin{lem}\label{res:matroidhypergraphs}
+    Let $M = (V, \sC)$ be a matroid. Then the associated circuit hypergraph $G_M = (V, \sC)$ is simple with weakly 2-complete, triangulated connected components. 
 \end{lem}
 \begin{proof} 
-    Suppose that $H$ is a connected component of $G$. Let $a$ and $b$ be vertices of $H$. Then, by Remark \ref{rmk:hyperpathscontainsimple}, there is a simple path, $P$ from $a$ to $b$ defined by the distinct vertices $\{a, x_1, \ldots , x_n, b\}$ and distinct hyperedges $\{A_0 , \ldots A_n\}$. Since $M$ is a matroid, all edges of $H$ are circuits of the matroid. 
-    
-    To see that $H$ is weakly $2$ connected, we need to find a hyperedge $C$ that contains both vertices. First, by Lemma \ref{res:2-complete}, since $x_2 \in A_1 \cap A_2$, we see that there is a hyperedge $C_2$ that contains both $a$ and $x_2$. Now, since $C_2$ and $A_3$ intersect ($x_2 \in C_2 \cap A_3$), and $a \in C_2$, we may find a $C_3$ that contains both $a$ and $x_3$. Proceeding in this fashion, we find a $C_{i}$ that contains both $a$ and $x_i$, and finally a $C_{n+1}$ that contains both $a$ and $b$. 
+	First note that condition \eqref{eqn:minmaxset}, which is necessary for $\sC$ to defined the circuit set of a matroid, is equivalent to requiring that $G$ is simple.
+	
+	Next, we show that the circuit condition, \eqref{eq:circuitcondition}, implies that connected components of $G_M$ are both weakly $2$-complete and triangulated. Triangulated follows directly from the definitions. By the circuit condition, for each $x \in C_1 \cap C_2$, there is a $C_3 \subseteq C_1 \cup C_2 \setminus x$ where $C_1, C_2$ and $C_3$ are circuits. Since $\sC$ satisfies \eqref{eqn:minmaxset}, we know that there is a $y \in C_1 \cap C_3$ and $z \in C_2 \cap C_3$ such that $\{x, y, z\}$ and $\{C_1, C_2, C_3\}$ define a triangle. 
+	
+	To see that each connected component of $G_M$ is weakly $2$-complete, let $a$ and $b$ be vertices in the same connected component. Then, by Remark \ref{rmk:hyperpathscontainsimple}, there is a simple path, $P$ from $a$ to $b$ defined by the distinct vertices $\{a, x_1, \ldots , x_n, b\}$ and distinct hyperedges $\{A_0 , \ldots A_n\}$. We prove weak $2$-completeness, we find a hyperedge $C$ that contains both vertices. First, by Lemma \ref{res:2-complete}, since $x_2 \in A_1 \cap A_2$, we see that there is a hyperedge $C_2$ that contains both $a$ and $x_2$. Now, since $C_2$ and $A_3$ intersect ($x_2 \in C_2 \cap A_3$), and $a \in C_2$, we may find a $C_3$ that contains both $a$ and $x_3$. Proceeding in this fashion, we find a $C_{i}$ that contains both $a$ and $x_i$, and finally a $C_{n+1}$ that contains both $a$ and $b$. 
 \end{proof}
 
-Not all hypergraphs with 2-complete connected components give rise to matroids. One needs to explicitly specify the conditions on the hyperedges make them interpretable as circuts. 
+We note that the converse does not hold. Namely, we may have a simple weakly 2-complete, triangulated hypergraph that does not correspond to a matroid. 
 
-\begin{lem}\label{res:somehypergraphsmatroids} \sanote{Everett: are the two conditions below hyper graph theoretic}
-    Let $G = (V, E)$ be a hypergraph. For $e \in E$, write $V(e) \subseteq V$ to indicate the vertices of $e$. Then $G$ defines a matroid if and only if it satisfies the following conditions:\begin{enumerate}
-        \item For every distinct $e, f \in E$, the the vertices of $V(e) \not \subset V(f)$.
-        \item If $x \in V$ is a vertex shared by $e$ and $f$, $x \in V(e) \cap V(f)$, then there is an edge $g$ with $V(g) \subseteq V(e) \cup V(f) \setminus x$
-    \end{enumerate}
+\begin{eg}\label{eg:2completetriangulatednotmatroid}
+	Let $G$ be the hypergraph on the vertex set $\{a, b, c, d\}$ with edges $\{\{a, b, c\}, \{d, a\}, \{d, b\}, \{d, c\}\}$. Then $G$ is simple, weakly 2-complete and triangulated. However, the edges of $G$ do not satisfy the circuit condition. Namely, $d$ is in the intersection of all two vertex edges, however, the only edge to contain, say, the vertices $a$ and $b$ also contains a vertex outside of the two sets, namely, $c$. Therefore the containment requirement of the circuit condition does not hold. 
+\end{eg}
+
+Therefore, we need an extra condition on simple hypergraphs with triangulated connected components in order for them to correspond to matroids. 
+
+\begin{lem}\label{res:somehypergraphsmatroids} 
+    Let $G = (V, E)$ be a simple hypergraph with triangulated connected components. If, for every edge $A$, of $G$, and every triangle, $\{x, y, z\}, \{A, B, C\}$ involving $A$, the vertices of $A$ are contained in the vertices of the other two edges: $A \subsetneq B\cup C$, then $M = (V,E)$ is a matroid defined by its circuits. 
 \end{lem}
 
 \begin{proof}
-    These are exactly the conditions necessary to interpret the collection of sets $\{ V(e) | e \in E\} $ as the circuit set of a matroid.
+Since $G$ is simple, condition \eqref{eqn:minmaxset} is satisfied. 
+
+Since $\{x, y, z\}, \{A, B, C\}$ is a triangle, with, say $x \in B \cap C$, we see that $x \not in A$. Therefore $A \subseteq B \cup C \setminus x$. Since $G$ is triangulated, for every $x \in B \cap C$, there exists and $A$ the complete the triangle. Furthermore, by the argument above, this $A$ satisfied the circuit condition \eqref{dfn:matroidcircuit}.  
 \end{proof}
 
+\begin{cor}
+	If $G$ satisfies the hypotheses of Lemma \ref{res:somehypergraphsmatroids}, then $G$ also has weakly $2$-complete connected components
+\end{cor}
+
+\begin{proof}
+	This follows from Lemma \ref{res:matroidhypergraphs} and the fact that, by construction $G$ is the circuit hypergraph associate to $M$. 
+\end{proof}
 
 \subsection{Matroid completion of hypergraphs}
 
